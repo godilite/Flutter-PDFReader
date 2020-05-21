@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Open PDF',
       theme: ThemeData(
+        primaryColor: kBlue,
         accentColor: kBlue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),

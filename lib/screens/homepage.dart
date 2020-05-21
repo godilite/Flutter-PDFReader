@@ -44,23 +44,6 @@ var dir = Directory('/sdcard');
     }
     
     
-  Widget _buildDirectories(
-      BuildContext context, AsyncSnapshot<List<Directory>> snapshot) {
-    Text text = const Text('');
-    if (snapshot.connectionState == ConnectionState.done) {
-      if (snapshot.hasError) {
-        text = Text('Error: ${snapshot.error}');
-      } else if (snapshot.hasData) {
-        final String combined =
-            snapshot.data.map((Directory d) => d.path).join(', ');
-        text = Text('paths: $combined');
-      } else {
-        text = const Text('path unavailable');
-      }
-    }
-    return Padding(padding: const EdgeInsets.all(16.0), child: text);
-  }
-
   static String formatBytes(int bytes, int decimals) {
     if (bytes <= 0) return "0 B";
     const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];

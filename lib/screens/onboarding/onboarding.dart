@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:connect/constants.dart';
 import 'package:connect/screens/homepage.dart';
-import 'package:connect/screens/login/login.dart';
 import 'package:connect/screens/onboarding/pages/first_slide/dark_card_content.dart';
 import 'package:connect/screens/onboarding/pages/first_slide/light_card_content.dart';
 import 'package:connect/screens/onboarding/pages/first_slide/text_column.dart';
