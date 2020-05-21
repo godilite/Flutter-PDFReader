@@ -1,4 +1,5 @@
 import 'package:connect/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CommunityDarkCardContent extends StatelessWidget {
@@ -10,7 +11,7 @@ class CommunityDarkCardContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: kPaddingL),
           child: Icon(
-            Icons.brush,
+            CupertinoIcons.pen,
             color: kWhite,
             size: 32.0,
           ),
@@ -18,7 +19,7 @@ class CommunityDarkCardContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: kPaddingL),
           child: Icon(
-            Icons.camera_alt,
+            CupertinoIcons.book,
             color: kWhite,
             size: 32.0,
           ),
@@ -26,7 +27,7 @@ class CommunityDarkCardContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: kPaddingL),
           child: Icon(
-            Icons.straighten,
+            Icons.share,
             color: kWhite,
             size: 32.0,
           ),

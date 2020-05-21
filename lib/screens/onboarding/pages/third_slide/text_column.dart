@@ -5,9 +5,9 @@ class WorkTextColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextColumn(
-      title: 'Work together',
+      title: 'Fast Printing',
       text:
-          'Adipisicing anim ex excepteur duis quis in tempor eu ullamco adipisicing.',
+          'Send PDFs from your phone to the printer.',
     );
   }
 }

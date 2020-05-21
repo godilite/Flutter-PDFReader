@@ -30,7 +30,7 @@ class _PDFScreenState extends State<PDFScreen> {
         appBar: AppBar(
           title: Text(widget.pathPDF.toString().split('/').last, softWrap: false,
         overflow: TextOverflow.ellipsis,),
-          backgroundColor: kDarkBlue,
+          backgroundColor: kBlue,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.share),
@@ -44,7 +44,7 @@ class _PDFScreenState extends State<PDFScreen> {
                   document: document,
                   zoomSteps: 1,
                   lazyLoad: false,
-                  scrollDirection: Axis.vertical,
+          //      scrollDirection: Axis.vertical,
 
                   //uncomment below code to replace bottom navigation with your own
                 navigationBuilder:

@@ -4,6 +4,7 @@ import 'package:connect/constants.dart';
 import 'package:connect/screens/pdfreader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:permission_handler/permission_handler.dart';
 class HomePage extends StatefulWidget {
@@ -71,9 +72,28 @@ var dir = Directory('/sdcard');
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  WillPopScope(
+        onWillPop: () async {
+          showCupertinoDialog(context: (context), 
+          builder: (_)=>CupertinoAlertDialog(
+                    title: Text("Closing Reader"),
+                    content: Text("Are you sure?"),
+                    insetAnimationCurve: Curves.bounceIn,
+                    insetAnimationDuration: Duration(milliseconds: 1000),
+                    actions: <Widget>[
+                      FlatButton(child: Text('No'), onPressed: (){Navigator.pop(context);},),
+                      FlatButton(child: Text("Yes"), onPressed: (){
+                        SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                      },
+                    )
+                  ],
+                )
+              );
+          return false;
+        },
+        child: Scaffold(
       appBar: AppBar(
-        backgroundColor: kDarkBlue,
+        backgroundColor: kBlue,
         title: Icon(Icons.local_library, size: 30,),
         centerTitle: true,
         automaticallyImplyLeading: false,
@@ -83,7 +103,7 @@ var dir = Directory('/sdcard');
       ),
       body: Padding(
         padding: EdgeInsets.only(top:8.0),
-        child: ListView.builder(
+        child: books.isEmpty ? Center(child: CircularProgressIndicator()): ListView.builder(
           itemBuilder: (BuildContext context, index){
           return Container(
             decoration: BoxDecoration(
@@ -125,11 +145,12 @@ var dir = Directory('/sdcard');
                 subtitle: Text("${books[index]['stats'].changed.day} - ${books[index]['stats'].changed.month} - ${books[index]['stats'].changed.year}" "   " "${formatBytes(books[index]['stats'].size, 2)}"),
                 ),
               )
-          );
-        },
-        itemCount: books.length,
-        ),
-      )
+            );
+          },
+          itemCount: books.length,
+          ),
+        )
+      ),
     );
   }
 }

@@ -17,7 +17,7 @@ class Logo extends StatelessWidget {
     return Transform.rotate(
       angle: -pi / 4,
       child: Icon(
-        Icons.format_bold,
+        Icons.local_library,
         color: color,
         size: size,
       ),

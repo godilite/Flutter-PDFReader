@@ -5,9 +5,9 @@ class CommunityTextColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextColumn(
-      title: 'Community',
+      title: 'PDF Reader',
       text:
-          'Eu sint do id aliqua qui tempor sint cillum commodo id voluptate qui.',
+          'Have a smooth read of PDF files from your device.',
     );
   }
 }

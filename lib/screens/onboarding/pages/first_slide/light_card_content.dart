@@ -9,15 +9,15 @@ class CommunityLightCardContent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         IconContainer(
-          icon: Icons.person,
+          icon: Icons.language,
           padding: kPaddingS,
         ),
         IconContainer(
-          icon: Icons.group,
+          icon: Icons.lightbulb_outline,
           padding: kPaddingM,
         ),
         IconContainer(
-          icon: Icons.insert_emoticon,
+          icon: Icons.library_books,
           padding: kPaddingS,
         ),
       ],

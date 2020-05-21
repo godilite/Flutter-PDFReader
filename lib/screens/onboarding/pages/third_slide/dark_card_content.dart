@@ -11,7 +11,7 @@ class WorkDarkCardContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Icon(
-              Icons.person_pin,
+              Icons.print,
               color: kWhite,
               size: 32.0,
             ),
@@ -22,17 +22,17 @@ class WorkDarkCardContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Icon(
-              Icons.person,
+              Icons.send,
               color: kWhite,
               size: 32.0,
             ),
             Icon(
-              Icons.group,
+              Icons.settings_input_antenna,
               color: kWhite,
               size: 32.0,
             ),
             Icon(
-              Icons.insert_emoticon,
+              Icons.wallpaper,
               color: kWhite,
               size: 32.0,
             ),

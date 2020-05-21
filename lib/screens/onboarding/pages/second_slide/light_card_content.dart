@@ -17,7 +17,7 @@ class EducationLightCardContent extends StatelessWidget {
           padding: kPaddingM,
         ),
         IconContainer(
-          icon: Icons.straighten,
+          icon: Icons.print,
           padding: kPaddingS,
         ),
       ],
