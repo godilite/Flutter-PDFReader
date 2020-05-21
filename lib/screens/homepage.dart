@@ -1,8 +1,9 @@
-import 'dart:async';
 import 'dart:io';
+import 'dart:math';
+import 'package:connect/constants.dart';
 import 'package:connect/screens/pdfreader.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:permission_handler/permission_handler.dart';
 class HomePage extends StatefulWidget {
@@ -11,35 +12,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>{
-  Future<Directory> _tempDirectory;
-  Future<Directory> _appSupportDirectory;
-  Future<Directory> _appLibraryDirectory;
-  Future<Directory> _appDocumentsDirectory;
-  Future<Directory> _externalDocumentsDirectory;
-  Future<List<Directory>> _externalStorageDirectories;
-  Future<List<Directory>> _externalCacheDirectories;
   List books = [];
-  Future<void> _requestTempDirectory() async {
-    if (await Permission.storage.request().isGranted) {
-      direct();
-      setState(() {
-        _tempDirectory = getTemporaryDirectory();
-      }); 
-    }
-  }
 
 void direct()async{
-  if (await Permission.storage.request().isGranted) {
+if (await Permission.storage.request().isGranted) {
 var dir = Directory('/sdcard');
   try {
     var dirList = dir.list(recursive: true, followLinks: false);
     await for (FileSystemEntity f in dirList) {
       if (f is File) {
         if (p.extension(f.path) == '.pdf') {
-          books.add(f.path);
+          books.add({'path': f.path, 'stats': await f.stat()});
           print('Found file ${f.path}'); 
         }
-      } 
+      }
+      setState(() {
+        
+      }); 
     }
   } catch (e) {
     print(e.toString());
@@ -52,22 +41,8 @@ var dir = Directory('/sdcard');
       direct();
       setState(() { });
     }
-  
-  Widget _buildDirectory(
-      BuildContext context, AsyncSnapshot<Directory> snapshot) {
-    Text text = const Text('');
-    if (snapshot.connectionState == ConnectionState.done) {
-      if (snapshot.hasError) {
-        text = Text('Error: ${snapshot.error}');
-      } else if (snapshot.hasData) {
-        text = Text('path: ${snapshot.data.path} ${p.basename(snapshot.data.path)} ${p.rootPrefix(snapshot.data.path)} ${p.current}');
-      } else {
-        text = const Text('path unavailable');
-      }
-    }
-    return Padding(padding: const EdgeInsets.all(16.0), child: text);
-  }
-
+    
+    
   Widget _buildDirectories(
       BuildContext context, AsyncSnapshot<List<Directory>> snapshot) {
     Text text = const Text('');
@@ -85,67 +60,125 @@ var dir = Directory('/sdcard');
     return Padding(padding: const EdgeInsets.all(16.0), child: text);
   }
 
-  void _requestAppDocumentsDirectory() {
-    setState(() {
-      _appDocumentsDirectory = getApplicationDocumentsDirectory();
-    });
-  }
-
-  void _requestAppSupportDirectory() {
-    setState(() {
-      _appSupportDirectory = getApplicationSupportDirectory();
-    });
-  }
-
-  void _requestAppLibraryDirectory() {
-    setState(() {
-      _appLibraryDirectory = getLibraryDirectory();
-    });
-  }
-
-  void _requestExternalStorageDirectory() {
-    setState(() {
-      _externalDocumentsDirectory = getExternalStorageDirectory();
-    });
-  }
-
-  void _requestExternalStorageDirectories(StorageDirectory type) {
-    setState(() {
-      _externalStorageDirectories = getExternalStorageDirectories(type: type);
-    });
-  }
-
-  void _requestExternalCacheDirectories() {
-    setState(() {
-      _externalCacheDirectories = getExternalCacheDirectories();
-    });
+  static String formatBytes(int bytes, int decimals) {
+    if (bytes <= 0) return "0 B";
+    const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    var i = (log(bytes) / log(1024)).floor();
+    return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) +
+        ' ' +
+        suffixes[i];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('reader'),
+        backgroundColor: kDarkBlue,
+        title: Icon(Icons.local_library, size: 30,),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: <Widget>[IconButton(icon: Icon(Icons.search), onPressed: (){
+          showSearch(context: context, delegate: DataSearch(books));
+          })],
       ),
-      body: ListView.builder(
-        itemBuilder: (BuildContext context, index){
-        return Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey, style: BorderStyle.solid),
-          ),
-          child: GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PDFScreen(books[index])),
+      body: Padding(
+        padding: EdgeInsets.only(top:8.0),
+        child: ListView.builder(
+          itemBuilder: (BuildContext context, index){
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey.shade100, style: BorderStyle.solid),
             ),
-            child: Text(books[index])
-            )
-        );
-      },
-      itemCount: books.length,
+            child: GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PDFScreen(books[index]['path'])),
+              ),
+              onLongPress: (){
+                showCupertinoDialog(
+                  context: context,
+                  builder: (_)=> CupertinoAlertDialog(
+                    title: Text("Deleting file"),
+                    content: Text("Do you want to delete ${books[index]['path'].toString().split('/').last}?"),
+                    insetAnimationCurve: Curves.bounceIn,
+                    insetAnimationDuration: Duration(milliseconds: 1000),
+                    actions: <Widget>[
+                      FlatButton(child: Text('No'), onPressed: (){Navigator.pop(context);},),
+                      FlatButton(child: Text("Yes"), onPressed: (){
+                        var file = File(books[index]['path']);
+                          file.delete();
+                          Navigator.pop(context);
+                          books.removeAt(index);
+                          setState(() {
+                          });                         
+                        },
+                      )
+                    ],
+                  )
+                  );
+              },
+              child: ListTile(
+                leading: Icon(Icons.picture_as_pdf, color: Colors.red, size: 40,), 
+                title: Text(books[index]['path'].toString().split('/').last, style: 
+                TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
+                subtitle: Text("${books[index]['stats'].changed.day} - ${books[index]['stats'].changed.month} - ${books[index]['stats'].changed.year}" "   " "${formatBytes(books[index]['stats'].size, 2)}"),
+                ),
+              )
+          );
+        },
+        itemCount: books.length,
+        ),
       )
     );
   }
+}
+
+class DataSearch extends SearchDelegate<String>{
+
+  final books;
+  final recentSearch = [];
+  DataSearch(this.books);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [ IconButton(icon: 
+    Icon(Icons.clear), 
+    onPressed: (){
+      query = "";
+    }),];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+      return IconButton(icon: 
+        AnimatedIcon(icon: AnimatedIcons.menu_arrow, 
+        progress: transitionAnimation, ), 
+        onPressed: (){
+          close(context, null);
+        });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    
+    return Card(
+      child: Text(query)
+      );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+     final searchList = query.isEmpty?
+     recentSearch:books;
+     return ListView.builder(itemBuilder: (context, index)=>ListTile(
+                leading: Icon(Icons.picture_as_pdf, color: Colors.red, size: 40,), 
+                title: Text(searchList[index]['path'].toString().split('/').last, style: 
+                TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
+                subtitle: Text("${searchList[index]['stats'].changed.day} - ${searchList[index]['stats'].changed.month} - ${searchList[index]['stats'].changed.year}"),
+        ),
+     itemCount: searchList.length,
+     );
+  }
+
 }

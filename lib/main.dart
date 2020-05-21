@@ -1,3 +1,4 @@
+import 'package:connect/constants.dart';
 import 'package:connect/screens/onboarding/onboarding.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'camera',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        accentColor: kBlue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowCheckedModeBanner: false,

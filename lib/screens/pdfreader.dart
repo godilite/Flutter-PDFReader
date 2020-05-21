@@ -1,3 +1,4 @@
+import 'package:connect/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 
@@ -20,16 +21,16 @@ class _PDFScreenState extends State<PDFScreen> {
   }
 
   loadDocument() async {
-    print(widget.pathPDF);
     document = await PDFDocument.fromAsset(widget.pathPDF);
-
     setState(() => _isLoading = false);
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Document"),
+          title: Text(widget.pathPDF.toString().split('/').last, softWrap: false,
+        overflow: TextOverflow.ellipsis,),
+          backgroundColor: kDarkBlue,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.share),
@@ -43,7 +44,7 @@ class _PDFScreenState extends State<PDFScreen> {
                   document: document,
                   zoomSteps: 1,
                   lazyLoad: false,
-                  // scrollDirection: Axis.vertical,
+                  scrollDirection: Axis.vertical,
 
                   //uncomment below code to replace bottom navigation with your own
                 navigationBuilder:
